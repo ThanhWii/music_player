@@ -11,6 +11,7 @@ const cdWidth = cd.offsetWidth;
 const playBtn = $('.btn-toggle-play');
 const prevBtn = $('.btn-prev');
 const nextBtn = $('.btn-next');
+const randomBtn = $('.btn-random');
 const player = $('.player');
 const progress = $('#progress');
 
@@ -19,13 +20,16 @@ class App {
     #songs;
     #currentIndex;
     #currentSong;
-    #isPlaying = false;
+    #isRandom = false;
+    #isRepeat = false;
+    #cdThumbAnimate = cdThumb.animate([{ transform: 'rotate(360deg)' }], { duration: 10000, iterations: Infinity, });
 
     // Constructor
     constructor(songs) {
         this.#songs = songs;
         this.#currentIndex = Math.floor(Math.random() * this.#songs.length);
         this.#currentSong = this.#songs[this.#currentIndex];
+        this.#cdThumbAnimate.pause();
     }
 
     // Private static methods
@@ -59,10 +63,17 @@ class App {
         $('.playlist').innerHTML = htmls.join('');
     }
 
+    #playSong() {
+        audio.play();
+        this.#cdThumbAnimate.play();
+    }
+
+    #pauseSong() {
+        audio.pause();
+        this.#cdThumbAnimate.pause();
+    }
+
     #handeEvents() {
-        // CD Spinning
-        const cdThumbAnimate = cdThumb.animate([{ transform: 'rotate(360deg)' }], { duration: 10000, iterations: Infinity, });
-        cdThumbAnimate.pause();
         // Zoom and shrink CD
         document.onscroll = function () {
             const scrollTop = window.scrollY || document.documentElement.scrollTop;
@@ -72,26 +83,30 @@ class App {
         }
         // Click Play Button
         playBtn.onclick = () => {
-            if (this.#isPlaying) {
-                audio.pause();
-                cdThumbAnimate.pause();
+            if (audio.paused) {
+                this.#playSong();
             }
             else {
-                audio.play();
-                cdThumbAnimate.play();
+                this.#pauseSong();
             }
         }
         // Click Prev Button
         prevBtn.onclick = () => {
-            this.#currentIndex = Math.max(--this.#currentIndex, 0);
-            this.#currentSong = this.#songs[this.#currentIndex];
-            this.#loadCurrentSong();
+            this.#prevSong();
         }
         // Click Next Button
         nextBtn.onclick = () => {
-            this.#currentIndex = Math.min(++this.#currentIndex, this.#songs.length - 1);
-            this.#currentSong = this.#songs[this.#currentIndex];
-            this.#loadCurrentSong();
+            this.#nextSong();
+        }
+        // Click Random Button
+        randomBtn.onclick = () => {
+            if (this.#isRandom) {
+                randomBtn.classList.remove('active');
+            }
+            else {
+                randomBtn.classList.add('active');
+            }
+            this.#isRandom = !this.#isRandom;
         }
         // When song loaded metadata
         audio.onloadedmetadata = () => {
@@ -99,12 +114,10 @@ class App {
         }
         // When song is playing
         audio.onplay = () => {
-            this.#isPlaying = true;
             player.classList.add('playing');
         }
         // When song is pausing
         audio.onpause = () => {
-            this.#isPlaying = false;
             player.classList.remove('playing');
         }
         // When song's progress change
@@ -118,23 +131,56 @@ class App {
             const seekTime = audio.duration / 100 * e.target.value;
             audio.currentTime = seekTime;
         }
+        // When song ended
+        audio.onended = () => {
+            this.#nextSong();
+        }
     }
 
     #loadCurrentSong() {
-        // Stop current song
-        audio.pause();
         // Reset interface
         progress.value = 0;
+        timeCurrent.textContent = '00:00';
         heading.textContent = this.#currentSong.name;
         cdThumb.style.backgroundImage = `url('${this.#currentSong.image}')`;
-        // Thiết lập nguồn mới và yêu cầu tải lại
+        // Get current song and load
         audio.preload = 'metadata';
         audio.src = this.#currentSong.path;
         audio.load();
         progress.value = 0;
-        if (this.#isPlaying) {
-            audio.play();
+    }
+
+    #prevSong() {
+        if (this.#isRandom) {
+            this.#getRandomIndex();
         }
+        else {
+            this.#currentIndex = Math.max(--this.#currentIndex, 0);
+        }
+        this.#currentSong = this.#songs[this.#currentIndex];
+        this.#loadCurrentSong();
+        this.#playSong();
+    }
+
+    #nextSong() {
+        if (this.#isRandom) {
+            this.#getRandomIndex();
+        }
+        else {
+            this.#currentIndex = Math.min(++this.#currentIndex, this.#songs.length - 1);
+        }
+        this.#currentSong = this.#songs[this.#currentIndex];
+        this.#loadCurrentSong();
+        this.#playSong();
+    }
+
+    #getRandomIndex() {
+        let newIndex;
+        do {
+            newIndex = Math.floor(Math.random() * this.#songs.length);
+        }
+        while (newIndex === this.#currentIndex);
+        this.#currentIndex = newIndex;
     }
 
     // API
