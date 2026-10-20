@@ -12,6 +12,7 @@ const playBtn = $('.btn-toggle-play');
 const prevBtn = $('.btn-prev');
 const nextBtn = $('.btn-next');
 const randomBtn = $('.btn-random');
+const repeatBtn = $('.btn-repeat');
 const player = $('.player');
 const progress = $('#progress');
 
@@ -108,6 +109,15 @@ class App {
             }
             this.#isRandom = !this.#isRandom;
         }
+        repeatBtn.onclick = () => {
+            if (this.#isRepeat) {
+                repeatBtn.classList.remove('active');
+            }
+            else {
+                repeatBtn.classList.add('active');
+            }
+            this.#isRepeat = !this.#isRepeat;
+        }
         // When song loaded metadata
         audio.onloadedmetadata = () => {
             timeEnd.textContent = App.#getTimeFormat(audio.duration);
@@ -133,7 +143,13 @@ class App {
         }
         // When song ended
         audio.onended = () => {
-            this.#nextSong();
+            if (this.#isRepeat) {
+                this.#loadCurrentSong();
+                this.#playSong();
+            }
+            else {
+                this.#nextSong();
+            }
         }
     }
 
