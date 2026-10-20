@@ -19,7 +19,7 @@
             <!-- Header -->
             <header>
                 <h4>Now playing:</h4>
-                <h2>String 57th & 9th</h2>
+                <h2>Sting 57th & 9th</h2>
             </header>
 
             <!-- CD -->
@@ -49,11 +49,11 @@
             </div>
 
             <div class="time">
-                <span class="time-current">0:00</span>
-                <span class="time-end"></span>
+                <span class="time-current">00:00</span>
+                <span class="time-end">00:00</span>
             </div>
 
-            <input id="progress" class="progress" type="range" value="0" step="1" min="0" max="100">
+            <input id="progress" class="progress" type="range" value="0" step="0.01" min="0" max="100">
 
             <audio id="audio" src=""></audio>
         </div>
@@ -64,6 +64,84 @@
         </div>
     </div>
     <script src="./main.js"></script>
+    <script>
+        const songs = [
+            {
+                name: 'APT.',
+                artist: 'ROSÉ & Bruno Mars',
+                path: './assets/musics/APT.mp3',
+                image: './assets/images/APT..jfif',
+            },
+            {
+                name: 'Despacito',
+                artist: 'Luis Fonsi, Daddy Yankee',
+                path: './assets/musics/Despacito.mp3',
+                image: './assets/images/Despacito.jfif',
+            },
+            {
+                name: 'Gangnam Style',
+                artist: 'PSY',
+                path: './assets/musics/Gangnam Style.mp3',
+                image: './assets/images/Gangnam Style.jfif',
+            },
+            {
+                name: 'Girls Like You',
+                artist: 'Maroon 5, Cardi B',
+                path: './assets/musics/Girls Like You.mp3',
+                image: './assets/images/Girls Like You.jfif',
+            },
+            {
+                name: 'Happy',
+                artist: 'Pharrell Williams',
+                path: './assets/musics/Happy.mp3',
+                image: './assets/images/Happy.jfif',
+            },
+            {
+                name: 'Havana',
+                artist: 'Camila Cabello feat. Young Thug',
+                path: './assets/musics/Havana.mp3',
+                image: './assets/images/Havana.jfif',
+            },
+            {
+                name: 'Kiss Me More',
+                artist: 'Doja Cat feat. SZA',
+                path: './assets/musics/Kiss Me More.mp3',
+                image: './assets/images/Kiss Me More.jfif',
+            },
+            {
+                name: 'Moonlight',
+                artist: 'Ariana Grande',
+                path: './assets/musics/Moonlight.mp3',
+                image: './assets/images/Moonlight.jfif',
+            },
+            {
+                name: 'See You Again',
+                artist: 'Wiz Khalifa',
+                path: './assets/musics/See You Again.mp3',
+                image: './assets/images/See You Again.jfif',
+            },
+            {
+                name: 'Senorita',
+                artist: 'Shawn Mendes, Camila Cabello',
+                path: './assets/musics/Senorita.mp3',
+                image: './assets/images/Senorita.jfif',
+            },
+            {
+                name: 'Shape Of You',
+                artist: 'Ed Sheeran',
+                path: './assets/musics/Shape Of You.mp3',
+                image: './assets/images/Shape Of You.jfif',
+            },
+            {
+                name: "We Don't Talk Anymore",
+                artist: 'Charlie Puth',
+                path: "./assets/musics/We Dont Talk Anymore.mp3",
+                image: "./assets/images/We Dont Talk Anymore.jfif",
+            },
+        ];
+        const musicPlayer = new App(songs);
+        musicPlayer.start();
+    </script>
 </body>
 
 </html>
