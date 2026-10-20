@@ -3,11 +3,14 @@ const $$ = document.querySelectorAll.bind(document);
 
 const heading = $('header h2');
 const cdThumb = $('.cd-thumb');
+const timeCurrent = $('.time-current');
+const timeEnd = $('.time-end');
 const audio = $('#audio');
 const cd = $('.cd');
 const cdWidth = cd.offsetWidth;
 const playBtn = $('.btn-toggle-play');
 const player = $('.player');
+const progress = $('#progress');
 
 class App {
     // Private properties
@@ -21,6 +24,18 @@ class App {
         this.#songs = songs;
         this.#currentIndex = 0;
         this.#currentSong = this.#songs[this.#currentIndex];
+    }
+
+    // Private static methods
+    static #getTimeFormat(seconds) {
+        if (!Number.isFinite(seconds) || seconds < 0) {
+            return '00:00';
+        }
+        const mins = Math.floor(seconds / 60);
+        const secs = Math.floor(seconds % 60);
+        const formattedMins = String(mins).padStart(2, '0');
+        const formattedSecs = String(secs).padStart(2, '0');
+        return `${formattedMins}:${formattedSecs}`;
     }
 
     // Private methods
@@ -59,6 +74,10 @@ class App {
                 audio.play();
             }
         }
+        // When song loaded metadata
+        audio.onloadedmetadata = () => {
+            timeEnd.textContent = App.#getTimeFormat(audio.duration);
+        }
         // When song is playing
         audio.onplay = () => {
             this.#isPlaying = true;
@@ -69,12 +88,24 @@ class App {
             this.#isPlaying = false;
             player.classList.remove('playing');
         }
+        // When song's progress change
+        audio.ontimeupdate = () => {
+            timeCurrent.textContent = App.#getTimeFormat(audio.currentTime);
+            const progressPercent = audio.currentTime / audio.duration * 100;
+            progress.value = progressPercent;
+        }
+        // When song is seeking
+        progress.onchange = (e) => {
+            const seekTime = audio.duration / 100 * e.target.value;
+            audio.currentTime = seekTime;
+        }
     }
 
     #loadCurrentSong() {
         heading.textContent = this.#currentSong.name;
-        cdThumb.style.backgroundImage = `url(${this.#currentSong.image})`;
+        cdThumb.style.backgroundImage = `url('${this.#currentSong.image}')`;
         audio.src = this.#currentSong.path;
+        audio.preload = "metadata";
     }
 
     // API
