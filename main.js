@@ -58,6 +58,9 @@ class App {
     }
 
     #handeEvents() {
+        // CD Spinning
+        const cdThumbAnimate = cdThumb.animate([{ transform: 'rotate(360deg)' }], { duration: 10000, iterations: Infinity, });
+        cdThumbAnimate.pause();
         // Zoom and shrink CD
         document.onscroll = function () {
             const scrollTop = window.scrollY || document.documentElement.scrollTop;
@@ -69,9 +72,11 @@ class App {
         playBtn.onclick = () => {
             if (this.#isPlaying) {
                 audio.pause();
+                cdThumbAnimate.pause();
             }
             else {
                 audio.play();
+                cdThumbAnimate.play();
             }
         }
         // When song loaded metadata
