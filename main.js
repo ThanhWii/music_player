@@ -15,6 +15,7 @@ const randomBtn = $('.btn-random');
 const repeatBtn = $('.btn-repeat');
 const player = $('.player');
 const progress = $('#progress');
+const playlist = $('.playlist');
 
 class App {
     // Private properties
@@ -49,7 +50,7 @@ class App {
     #render() {
         const htmls = this.#songs.map((song, index) => {
             return `
-                <div class="song ${index === this.#currentIndex ? 'active' : ''}">
+                <div class="song ${index === this.#currentIndex ? 'active' : ''}" data-index='${index}'>
                     <div class="thumb" style="background-image: url('${song.image}')"></div>
                     <div class="body">
                         <h3 class="title">${song.name}</h3>
@@ -61,7 +62,7 @@ class App {
                 </div>
             `;
         });
-        $('.playlist').innerHTML = htmls.join('');
+        playlist.innerHTML = htmls.join('');
     }
 
     #playSong() {
@@ -81,6 +82,17 @@ class App {
             const newCdWidth = cdWidth - scrollTop;
             cd.style.width = newCdWidth > 0 ? newCdWidth + 'px' : 0;
             cd.style.opacity = newCdWidth / cdWidth;
+        }
+        // Click Song in Playlist
+        playlist.onclick = (e) => {
+            const songElement = e.target.closest('.song:not(.active)');
+            if (songElement && !e.target.closest('.option')) {
+                const songIndex = parseInt(songElement.dataset.index);
+                this.#currentIndex = songIndex;
+                this.#currentSong = this.#songs[this.#currentIndex];
+                this.#loadCurrentSong();
+                this.#playSong();
+            }
         }
         // Click Play Button
         playBtn.onclick = () => {
