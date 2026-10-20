@@ -34,8 +34,8 @@ class App {
         this.#currentSong = this.#songs[this.#currentIndex];
         this.#cdThumbAnimate.pause();
         this.#config = JSON.parse(localStorage.getItem('music-player-config')) || {};
-        this.#isRandom = this.#config.isRandom;
-        this.#isRepeat = this.#config.isRepeat;
+        this.#isRandom = this.#config.isRandom || false;
+        this.#isRepeat = this.#config.isRepeat || false;
     }
 
     // Private static methods
@@ -189,7 +189,9 @@ class App {
         audio.preload = 'metadata';
         audio.src = this.#currentSong.path;
         audio.load();
-        this.#render();
+        if (!this.#isRepeat) {
+            this.#render();
+        }
         localStorage.setItem('music-player-index', this.#currentIndex);
     }
 
