@@ -30,7 +30,7 @@ class App {
     // Constructor
     constructor(songs) {
         this.#songs = songs;
-        this.#currentIndex = 0 // Math.floor(Math.random() * this.#songs.length);
+        this.#currentIndex = parseInt(localStorage.getItem('music-player-index')) || 0;
         this.#currentSong = this.#songs[this.#currentIndex];
         this.#cdThumbAnimate.pause();
         this.#config = JSON.parse(localStorage.getItem('music-player-config')) || {};
@@ -190,6 +190,7 @@ class App {
         audio.src = this.#currentSong.path;
         audio.load();
         this.#render();
+        localStorage.setItem('music-player-index', this.#currentIndex);
     }
 
     #prevSong() {
