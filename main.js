@@ -22,16 +22,20 @@ class App {
     #songs;
     #currentIndex;
     #currentSong;
-    #isRandom = false;
-    #isRepeat = false;
+    #isRandom;
+    #isRepeat;
     #cdThumbAnimate = cdThumb.animate([{ transform: 'rotate(360deg)' }], { duration: 10000, iterations: Infinity, });
+    #config;
 
     // Constructor
     constructor(songs) {
         this.#songs = songs;
-        this.#currentIndex = Math.floor(Math.random() * this.#songs.length);
+        this.#currentIndex = parseInt(localStorage.getItem('music-player-index')) || 0;
         this.#currentSong = this.#songs[this.#currentIndex];
         this.#cdThumbAnimate.pause();
+        this.#config = JSON.parse(localStorage.getItem('music-player-config')) || {};
+        this.#isRandom = this.#config.isRandom || false;
+        this.#isRepeat = this.#config.isRepeat || false;
     }
 
     // Private static methods
@@ -120,6 +124,11 @@ class App {
                 randomBtn.classList.add('active');
             }
             this.#isRandom = !this.#isRandom;
+            this.#config = {
+                ...this.#config,
+                isRandom: this.#isRandom,
+            }
+            localStorage.setItem('music-player-config', JSON.stringify(this.#config));
         }
         repeatBtn.onclick = () => {
             if (this.#isRepeat) {
@@ -129,6 +138,11 @@ class App {
                 repeatBtn.classList.add('active');
             }
             this.#isRepeat = !this.#isRepeat;
+            this.#config = {
+                ...this.#config,
+                isRepeat: this.#isRepeat,
+            }
+            localStorage.setItem('music-player-config', JSON.stringify(this.#config));
         }
         // When song loaded metadata
         audio.onloadedmetadata = () => {
@@ -175,7 +189,10 @@ class App {
         audio.preload = 'metadata';
         audio.src = this.#currentSong.path;
         audio.load();
-        this.#render();
+        if (!this.#isRepeat) {
+            this.#render();
+        }
+        localStorage.setItem('music-player-index', this.#currentIndex);
     }
 
     #prevSong() {
@@ -211,8 +228,15 @@ class App {
         this.#currentIndex = newIndex;
     }
 
+    #loadConfig() {
+        repeatBtn.classList.toggle('active', this.#isRepeat);
+        randomBtn.classList.toggle('active', this.#isRandom);
+    }
+
     // API
     start() {
+        // Load config
+        this.#loadConfig();
         // Handle DOM events
         this.#handeEvents();
         // Load current song
