@@ -47,9 +47,9 @@ class App {
 
     // Private methods
     #render() {
-        const htmls = this.#songs.map((song) => {
+        const htmls = this.#songs.map((song, index) => {
             return `
-                <div class="song">
+                <div class="song ${index === this.#currentIndex ? 'active' : ''}">
                     <div class="thumb" style="background-image: url('${song.image}')"></div>
                     <div class="body">
                         <h3 class="title">${song.name}</h3>
@@ -137,7 +137,7 @@ class App {
             progress.value = progressPercent;
         }
         // When song is seeking
-        progress.onchange = (e) => {
+        progress.oninput = (e) => {
             const seekTime = audio.duration / 100 * e.target.value;
             audio.currentTime = seekTime;
         }
@@ -163,7 +163,7 @@ class App {
         audio.preload = 'metadata';
         audio.src = this.#currentSong.path;
         audio.load();
-        progress.value = 0;
+        this.#render();
     }
 
     #prevSong() {
