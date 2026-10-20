@@ -9,6 +9,8 @@ const audio = $('#audio');
 const cd = $('.cd');
 const cdWidth = cd.offsetWidth;
 const playBtn = $('.btn-toggle-play');
+const prevBtn = $('.btn-prev');
+const nextBtn = $('.btn-next');
 const player = $('.player');
 const progress = $('#progress');
 
@@ -22,7 +24,7 @@ class App {
     // Constructor
     constructor(songs) {
         this.#songs = songs;
-        this.#currentIndex = 0;
+        this.#currentIndex = Math.floor(Math.random() * this.#songs.length);
         this.#currentSong = this.#songs[this.#currentIndex];
     }
 
@@ -79,6 +81,18 @@ class App {
                 cdThumbAnimate.play();
             }
         }
+        // Click Prev Button
+        prevBtn.onclick = () => {
+            this.#currentIndex = Math.max(--this.#currentIndex, 0);
+            this.#currentSong = this.#songs[this.#currentIndex];
+            this.#loadCurrentSong();
+        }
+        // Click Next Button
+        nextBtn.onclick = () => {
+            this.#currentIndex = Math.min(++this.#currentIndex, this.#songs.length - 1);
+            this.#currentSong = this.#songs[this.#currentIndex];
+            this.#loadCurrentSong();
+        }
         // When song loaded metadata
         audio.onloadedmetadata = () => {
             timeEnd.textContent = App.#getTimeFormat(audio.duration);
@@ -107,10 +121,20 @@ class App {
     }
 
     #loadCurrentSong() {
+        // Stop current song
+        audio.pause();
+        // Reset interface
+        progress.value = 0;
         heading.textContent = this.#currentSong.name;
         cdThumb.style.backgroundImage = `url('${this.#currentSong.image}')`;
+        // Thiết lập nguồn mới và yêu cầu tải lại
+        audio.preload = 'metadata';
         audio.src = this.#currentSong.path;
-        audio.preload = "metadata";
+        audio.load();
+        progress.value = 0;
+        if (this.#isPlaying) {
+            audio.play();
+        }
     }
 
     // API
