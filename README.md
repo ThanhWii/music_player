@@ -82,10 +82,10 @@ const songs = [
         image: './assets/images/APT..jfif',
     },
     {
-        name: 'Despacito',
+        name: 'Blinding Lights',
         artist: 'Luis Fonsi, Daddy Yankee',
-        path: './assets/musics/Despacito.mp3',
-        image: './assets/images/Despacito.jfif',
+        path: './assets/musics/Blinding Lights.mp3',
+        image: './assets/images/Blinding Lights.jfif',
     }
     // Add more tracks here...
 ];
@@ -93,25 +93,6 @@ const songs = [
 const musicPlayer = new App(songs);
 musicPlayer.start();
 ```
-
----
-
-## 🎵 Featured Tracklist
-
-| # | Track Title | Artist |
-| :- | :--- | :--- |
-| 01 | **APT.** | ROSÉ & Bruno Mars |
-| 02 | **Despacito** | Luis Fonsi, Daddy Yankee |
-| 03 | **Gangnam Style** | PSY |
-| 04 | **Girls Like You** | Maroon 5, Cardi B |
-| 05 | **Happy** | Pharrell Williams |
-| 06 | **Havana** | Camila Cabello feat. Young Thug |
-| 07 | **Kiss Me More** | Doja Cat feat. SZA |
-| 08 | **Moonlight** | Ariana Grande |
-| 09 | **See You Again** | Wiz Khalifa |
-| 10 | **Senorita** | Shawn Mendes, Camila Cabello |
-| 11 | **Shape Of You** | Ed Sheeran |
-| 12 | **We Don't Talk Anymore** | Charlie Puth |
 
 ---
 
