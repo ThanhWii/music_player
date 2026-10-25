@@ -22,6 +22,7 @@ class App {
     #songs;
     #currentIndex;
     #currentSong;
+    #playedSongRandomIndex = [];
     #isRandom;
     #isRepeat;
     #cdThumbAnimate = cdThumb.animate([{ transform: 'rotate(360deg)' }], { duration: 10000, iterations: Infinity, });
@@ -124,6 +125,7 @@ class App {
                 randomBtn.classList.add('active');
             }
             this.#isRandom = !this.#isRandom;
+            this.#playedSongRandomIndex = [];
             this.#config = {
                 ...this.#config,
                 isRandom: this.#isRandom,
@@ -221,10 +223,14 @@ class App {
 
     #getRandomIndex() {
         let newIndex;
+        if (this.#playedSongRandomIndex.length >= (this.#songs.length / 2)) {
+            this.#playedSongRandomIndex = [];
+        }
         do {
             newIndex = Math.floor(Math.random() * this.#songs.length);
         }
-        while (newIndex === this.#currentIndex);
+        while (newIndex === this.#currentIndex || this.#playedSongRandomIndex.includes(newIndex));
+        this.#playedSongRandomIndex.push(newIndex);
         this.#currentIndex = newIndex;
     }
 
