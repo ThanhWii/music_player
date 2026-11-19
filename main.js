@@ -22,7 +22,7 @@ class App {
     #songs;
     #currentIndex;
     #currentSong;
-    #playedSongRandomIndex = [];
+    #playedSongRandomIndex;
     #isRandom;
     #isRepeat;
     #cdThumbAnimate = cdThumb.animate([{ transform: "rotate(360deg)" }], {
@@ -42,6 +42,9 @@ class App {
             JSON.parse(localStorage.getItem("music-player-config")) || {};
         this.#isRandom = this.#config.isRandom || false;
         this.#isRepeat = this.#config.isRepeat || false;
+        this.#playedSongRandomIndex = this.#isRandom
+            ? [this.#currentIndex]
+            : [];
     }
 
     // Private static methods
